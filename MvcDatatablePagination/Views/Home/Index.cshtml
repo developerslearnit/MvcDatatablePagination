@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">
+                    People
+                </h2>
+            </div>
+            <div class="panel-body">
+                <table id="peopleTable" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+
+                            <th>First Name</th>
+                            <th>Middle Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th style="width:6%"></th>
+                        </tr>
+                    </thead>
+                    <thead id="searchHeader">
+                        <tr>
+                            <th><input type="text" data-column="1" class="form-control search-input" /></th>
+                            <th><input type="text" data-column="2" class="form-control search-input" /></th>
+                            <th><input type="text" data-column="3" class="form-control search-input" /></th>
+                            <th><input type="text" data-column="4" class="form-control search-input" /></th>
+                            <th><input type="text" data-column="5" class="form-control search-input" /></th>
+                            <th style="width:6%"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts{
+
+<script>
+
+    $(function () {
+
+        $('.dataTables_filter input').attr('placeholder', 'Search...').hide();
+        var table = $("#peopleTable").DataTable({
+            "processing": true, // for show progress bar
+            "serverSide": true, // for process server side
+            "filter": true, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            //"dom": '<"top"i>rt<"bottom"lp><"clear">',
+            "ajax": {
+                "url": '@Url.Action("getPeople", "home")',
+                "type": "POST",
+                "datatype": "json"
+            },
+            "columns": [
+                { "data": "firstName", "name": "firstName", "autoWidth": true },
+                { "data": "middleName", "name": "middleName", "autoWidth": true },
+                { "data": "lastName", "name": "lastName", "autoWidth": true },
+                { "data": "emailAddress", "name": "emailAddress", "autoWidth": true },
+                { "data": "phone", "name": "phone", "autoWidth": true },
+                { "data": null, "name": "Action", "defaultContent": '<a href="#" class="editLink"><i class="fa fa-edit"></i></a> | <a href="#" class="viewLink"><i class="fa fa-eye"></i></a>', "autoWidth": true }
+
+            ]
+
+        });
+
+        $('.search-input').on('keyup change', function () {
+            var index = $(this).attr('data-column'),
+                val = $(this).val();
+            table.columns(index).search(val.trim()).draw();
+        });
+
+
+    });
+
+</script>
+}
